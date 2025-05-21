@@ -31,4 +31,6 @@ public class Player {
     public int getPoints() { return points; }
 
     public void setName(String name) { this.name = name; }
+
+    public void scorePoint(){ points++; }
 }
