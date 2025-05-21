@@ -1,5 +1,7 @@
 package dev.alejandro.tennis_game.player;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 @Service
@@ -15,6 +17,10 @@ public class PlayerService {
         return playerRepository.findById(id)
                                .orElseThrow(() -> 
                                new PlayerNotFoundException(id));
+    }
+
+    public List<Player> getAllPlayers(){
+        return playerRepository.findAll();
     }
 
 }
