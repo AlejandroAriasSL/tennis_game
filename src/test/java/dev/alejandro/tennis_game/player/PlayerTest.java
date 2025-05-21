@@ -50,4 +50,15 @@ public class PlayerTest {
 
         assertThat(points, is(equalTo(0)));
     }
+
+    @Test
+    @DisplayName("Player should score 1 point")
+    void test_player_scores_points(){
+
+        int points = player.getPoints();
+        assertThat(points, is(equalTo(0)));
+
+        player.scorePoint();
+        assertThat(player.getPoints(), is(equalTo(1)));
+    }
 }
