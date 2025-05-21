@@ -42,6 +42,7 @@ public class PlayerServiceTest {
         Player foundPlayer = playerService.getPlayerById(id);
 
         assertThat(foundPlayer, is(equalTo(player)));
+        verify(playerRepository).findById(id);
 
     }
 
@@ -57,6 +58,8 @@ public class PlayerServiceTest {
         });
 
         assertThat(exception.getMessage(), is(equalTo(expectedMessage)));
+
+        verify(playerRepository).findById(id);
     }
 
     @Test
@@ -71,6 +74,7 @@ public class PlayerServiceTest {
         when(playerRepository.findAll()).thenReturn(players);
 
         assertThat(playerService.getAllPlayers(), is(equalTo(players)));
+        verify(playerRepository).findAll();
     }
 
     @Test
