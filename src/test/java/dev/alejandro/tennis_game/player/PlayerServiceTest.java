@@ -5,6 +5,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
@@ -69,6 +70,26 @@ public class PlayerServiceTest {
 
         when(playerRepository.findAll()).thenReturn(players);
 
-        assertThat(playerRepository.findAll(), is(equalTo(players)));
+        assertThat(playerService.getAllPlayers(), is(equalTo(players)));
     }
+
+    @Test
+    @DisplayName("PlayerService correctly saves players")
+    void test_save_players(){
+
+        Player player = new Player(name, id);
+
+        when(playerRepository.save(player)).thenReturn(player);
+        when(playerRepository.findById(id)).thenReturn(Optional.of(player));
+
+        playerService.savePLayer(player);
+        Player found = playerService.getPlayerById(id);
+
+        assertThat(found, is(equalTo(player)));
+        
+        verify(playerRepository).save(player);
+        verify(playerRepository).findById(id);
+
+    }
+
 }
