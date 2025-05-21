@@ -5,6 +5,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -83,7 +84,6 @@ public class PlayerServiceTest {
 
         Player player = new Player(name, id);
 
-        when(playerRepository.save(player)).thenReturn(player);
         when(playerRepository.findById(id)).thenReturn(Optional.of(player));
 
         playerService.savePLayer(player);
@@ -93,6 +93,23 @@ public class PlayerServiceTest {
         
         verify(playerRepository).save(player);
         verify(playerRepository).findById(id);
+
+    }
+
+    @Test
+    @DisplayName("PlayerService correctly deletes players")
+    void test_delete_players(){
+
+        Player player = new Player(name, id);
+
+        when(playerRepository.save(player)).thenReturn(player);
+        when(playerRepository.existsById(id)).thenReturn(true);
+
+        playerService.savePLayer(player);
+        playerService.deletePlayer(id);
+
+        verify(playerRepository, times(1)).save(player);
+        verify(playerRepository, times(1)).deleteById(id);
 
     }
 
