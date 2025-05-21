@@ -113,4 +113,19 @@ public class PlayerServiceTest {
 
     }
 
+    @Test
+    @DisplayName("PlayerService throws exception if player doesnt exist before deleting")
+    void test_throws_exception_if_doesnt_exist_before_deletion(){
+
+        String expectedMessage = "Player with id: " + id + " not found";
+
+        PlayerNotFoundException exception = assertThrows(PlayerNotFoundException.class, () -> {
+            playerService.deletePlayer(id);
+        });
+
+        assertThat(exception.getMessage(), is(equalTo(expectedMessage)));
+
+        verify(playerRepository, times(1)).existsById(id);
+    }
+
 }
