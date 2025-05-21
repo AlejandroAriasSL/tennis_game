@@ -38,4 +38,20 @@ public class PlayerDTOTest {
         assertThat(player.getId(), is(equalTo(id)));
     }
 
+    @Test
+    @DisplayName("PlayerDTO is able to be build statically from an entity")
+    void test_playerDto_from_entity(){
+
+        String name = "Player1";
+        Long id = 1L;
+
+        Player player = new Player(name, id);
+
+        PlayerDTO playerDto = PlayerDTO.fromEntity(player);
+
+        assertThat(playerDto.getClass(), is(equalTo(PlayerDTO.class)));
+        assertThat(playerDto.name(), is(equalTo(name)));
+        assertThat(playerDto.id(), is(equalTo(id)));
+    }
+
 }
