@@ -51,8 +51,8 @@ public class PlayerServiceTest {
 
         when(playerRepository.findById(id)).thenReturn(Optional.empty());
 
-        String expectedMessage = "Player with ID " + id + " not found";
-        EntityNotFoundException exception = assertThrows(EntityNotFoundException.class, () -> {
+        String expectedMessage = "Player with id: " + id + " not found";
+        PlayerNotFoundException exception = assertThrows(PlayerNotFoundException.class, () -> {
             playerService.getPlayerById(id);
         });
 

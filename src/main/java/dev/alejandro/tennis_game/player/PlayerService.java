@@ -2,8 +2,6 @@ package dev.alejandro.tennis_game.player;
 
 import org.springframework.stereotype.Service;
 
-import jakarta.persistence.EntityNotFoundException;
-
 @Service
 public class PlayerService {
 
@@ -16,7 +14,7 @@ public class PlayerService {
     public Player getPlayerById(Long id){
         return playerRepository.findById(id)
                                .orElseThrow(() -> 
-                               new EntityNotFoundException("Player with ID " + id + " not found"));
+                               new PlayerNotFoundException(id));
     }
 
 }
