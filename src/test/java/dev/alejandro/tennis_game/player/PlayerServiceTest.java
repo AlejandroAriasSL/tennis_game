@@ -3,6 +3,7 @@ package dev.alejandro.tennis_game.player;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -10,6 +11,8 @@ import java.util.Optional;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import jakarta.persistence.EntityNotFoundException;
 
 public class PlayerServiceTest {
 
@@ -31,5 +34,24 @@ public class PlayerServiceTest {
 
         assertThat(foundPlayer, is(equalTo(player)));
 
+    }
+
+    @Test
+    @DisplayName("PlayerService throws exception when player not found by ID")
+    void test_player_not_found_throws_exception(){
+
+        PlayerRepository playerRepository = mock(PlayerRepository.class);
+        PlayerService playerService = new PlayerService(playerRepository);
+
+        Long id = 1L;
+
+        when(playerRepository.findById(id)).thenReturn(Optional.empty());
+
+        String expectedMessage = "Player with ID " + id + " not found";
+        EntityNotFoundException exception = assertThrows(EntityNotFoundException.class, () -> {
+            playerService.getPlayerById(id);
+        });
+
+        assertThat(exception.getMessage(), is(equalTo(expectedMessage)));
     }
 }
