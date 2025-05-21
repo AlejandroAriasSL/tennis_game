@@ -21,6 +21,8 @@ public class Player {
 
     private int points = 0;
 
+    public Player() {}
+
     public Player(String name, Long id){
         this.name = name;
         this.id = id;
