@@ -17,7 +17,7 @@ public class PlayerService {
         playerRepository.save(player);
     }
 
-    public Player getPlayerById(Long id){
+    public Player getPlayerById(Long id) throws PlayerNotFoundException{
         return playerRepository.findById(id)
                                .orElseThrow(() -> 
                                new PlayerNotFoundException(id));
@@ -25,6 +25,13 @@ public class PlayerService {
 
     public List<Player> getAllPlayers(){
         return playerRepository.findAll();
+    }
+
+    public void deletePlayer(Long id) throws PlayerNotFoundException{
+        if (!playerRepository.existsById(id)){
+            throw new PlayerNotFoundException(id);
+        }
+        playerRepository.deleteById(id);
     }
 
 }
