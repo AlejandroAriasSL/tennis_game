@@ -13,6 +13,10 @@ public class PlayerService {
         this.playerRepository = playerRepository;
     }
 
+    public void savePLayer(Player player){
+        playerRepository.save(player);
+    }
+
     public Player getPlayerById(Long id){
         return playerRepository.findById(id)
                                .orElseThrow(() -> 
