@@ -50,6 +50,6 @@ public class PlayerTest {
         Player player = new Player(name, id);
         int points = player.getPoints();
 
-        assertThat(player.getPoints(), isA(equalTo(0)));
+        assertThat(player.getPoints(), is(equalTo(0)));
     }
 }

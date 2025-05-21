@@ -19,6 +19,8 @@ public class Player {
     @Column(name = "player_name", nullable = false)
     private String name;
 
+    private int points = 0;
+
     public Player(String name, Long id){
         this.name = name;
         this.id = id;
@@ -26,6 +28,7 @@ public class Player {
 
     public String getName() { return name; }
     public Long getId() { return id; }
+    public int getPoints() { return points; }
 
     public void setName(String name) { this.name = name; }
 }
