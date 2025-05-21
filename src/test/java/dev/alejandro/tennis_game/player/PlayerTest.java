@@ -23,4 +23,19 @@ public class PlayerTest {
         assertThat(player.getName(), is(equalTo(name)));
         assertThat(player.getId(), is(equalTo(id)));
     }
+
+    @Test
+    @DisplayName("Player can change name")
+    void test_player_name_change(){
+
+        String name = "player1";
+        Long id = 1L;
+
+        Player player = new Player(name, id);
+        String newName = "player2";
+        
+        player.setName(newName);
+        assertThat(player.getName(), is(equalTo(newName)));
+
+    }
 }
