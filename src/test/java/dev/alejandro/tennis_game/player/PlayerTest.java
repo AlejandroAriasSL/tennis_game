@@ -3,6 +3,7 @@ package dev.alejandro.tennis_game.player;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import static org.mockito.ArgumentMatchers.isA;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -37,5 +38,18 @@ public class PlayerTest {
         player.setName(newName);
         assertThat(player.getName(), is(equalTo(newName)));
 
+    }
+
+    @Test
+    @DisplayName("Player starts with 0 points")
+    void test_player_initial_points_are_zero(){
+
+        String name = "Player1";
+        Long id = 1L;
+
+        Player player = new Player(name, id);
+        int points = player.getPoints();
+
+        assertThat(player.getPoints(), isA(equalTo(0)));
     }
 }
