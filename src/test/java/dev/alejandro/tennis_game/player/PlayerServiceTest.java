@@ -7,13 +7,12 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import jakarta.persistence.EntityNotFoundException;
 
 public class PlayerServiceTest {
 
@@ -57,5 +56,19 @@ public class PlayerServiceTest {
         });
 
         assertThat(exception.getMessage(), is(equalTo(expectedMessage)));
+    }
+
+    @Test
+    @DisplayName("PlayerService returns all players")
+    void test_all_players_found(){
+
+        Player player = new Player(name, id);
+        Player player2 = new Player("player2", 2L);
+
+        List<Player> players = List.of(player, player2);
+
+        when(playerRepository.findAll()).thenReturn(players);
+
+        assertThat(playerRepository.findAll(), is(equalTo(players)));
     }
 }
