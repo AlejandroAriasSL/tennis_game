@@ -37,4 +37,10 @@ public class PlayerController {
         playerService.createOrUpdate(createRequest);
         return ResponseEntity.ok("Jugador creado con éxito");
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<String> updatePlayer(@RequestBody final UpdatePlayerRequest updateRequest){
+        playerService.createOrUpdate(updateRequest);
+        return ResponseEntity.ok("Jugador actualizado con éxito");
+    }
 }
