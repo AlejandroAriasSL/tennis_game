@@ -13,7 +13,7 @@ public class PlayerService {
         this.playerRepository = playerRepository;
     }
 
-    public void savePLayer(Player player){
+    public void createOrUpdate(Player player){
         playerRepository.save(player);
     }
 

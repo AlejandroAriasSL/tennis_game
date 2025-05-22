@@ -92,7 +92,7 @@ public class PlayerServiceTest {
 
         when(playerRepository.findById(id)).thenReturn(Optional.of(player));
 
-        playerService.savePLayer(player);
+        playerService.createOrUpdate(player);
         Player found = playerService.getPlayerById(id);
 
         assertThat(found, is(equalTo(player)));
@@ -109,7 +109,7 @@ public class PlayerServiceTest {
         when(playerRepository.save(player)).thenReturn(player);
         when(playerRepository.existsById(id)).thenReturn(true);
 
-        playerService.savePLayer(player);
+        playerService.createOrUpdate(player);
         playerService.deletePlayer(id);
 
         verify(playerRepository, times(1)).save(player);
