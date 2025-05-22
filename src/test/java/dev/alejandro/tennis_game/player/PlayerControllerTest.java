@@ -106,4 +106,21 @@ public class PlayerControllerTest {
 
         verify(repository, times(1)).save(any(Player.class));
     }
+
+    @Test
+    @DisplayName("PlayerController deletePlayer returns success response")
+    void test_playerController_delete_succesful(){
+
+        Long id = 1L;
+
+        when(repository.existsById(id)).thenReturn(true);
+
+        ResponseEntity<String> response = playerController.deletePlayer(id);
+
+        assertThat(response.getStatusCode().is2xxSuccessful(), is(equalTo(true)));
+        assertThat(response.getBody(), is(notNullValue()));
+        assertThat(response.getBody(), is(equalTo("Jugador eliminado con éxito")));
+
+        verify(repository, times(1)).deleteById(id);
+    }
 }
