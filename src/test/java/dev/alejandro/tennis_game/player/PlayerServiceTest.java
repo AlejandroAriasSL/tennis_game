@@ -15,18 +15,30 @@ import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
 
 public class PlayerServiceTest {
 
     String name;
     Long id;
+    String expectedMessage;
+    
+    Player player;
+    PlayerNotFoundException exception;
     PlayerRepository playerRepository;
     PlayerService playerService;
+
+    PlayerNotFoundException assertThrowsPlayerNotFoundException(Executable executable){
+        return assertThrows(PlayerNotFoundException.class, executable);
+    }
+
 
     @BeforeEach
     void setUp(){
         name = "Player1";
         id = 1L;
+        expectedMessage = "Player with id: " + id + " not found";
+        player = new Player(name, id);
         playerRepository = mock(PlayerRepository.class);
         playerService = new PlayerService(playerRepository);
     }
@@ -35,8 +47,6 @@ public class PlayerServiceTest {
     @Test
     @DisplayName("PlayerService returns player by ID when found")
     void test_player_found_by_id(){
-
-        Player player = new Player(name, id);
 
         when(playerRepository.findById(id)).thenReturn(Optional.of(player));
 
@@ -52,11 +62,10 @@ public class PlayerServiceTest {
     void test_player_not_found_throws_exception(){
 
         when(playerRepository.findById(id)).thenReturn(Optional.empty());
-
-        String expectedMessage = "Player with id: " + id + " not found";
-        PlayerNotFoundException exception = assertThrows(PlayerNotFoundException.class, () -> {
-            playerService.getPlayerById(id);
-        });
+        
+        exception = assertThrowsPlayerNotFoundException(() -> 
+            playerService.getPlayerById(id)
+        );
 
         assertThat(exception.getMessage(), is(equalTo(expectedMessage)));
 
@@ -67,7 +76,6 @@ public class PlayerServiceTest {
     @DisplayName("PlayerService returns all players")
     void test_all_players_found(){
 
-        Player player = new Player(name, id);
         Player player2 = new Player("player2", 2L);
 
         List<Player> players = List.of(player, player2);
@@ -81,8 +89,6 @@ public class PlayerServiceTest {
     @Test
     @DisplayName("PlayerService correctly saves players")
     void test_save_players(){
-
-        Player player = new Player(name, id);
 
         when(playerRepository.findById(id)).thenReturn(Optional.of(player));
 
@@ -100,8 +106,6 @@ public class PlayerServiceTest {
     @DisplayName("PlayerService correctly deletes players")
     void test_delete_players(){
 
-        Player player = new Player(name, id);
-
         when(playerRepository.save(player)).thenReturn(player);
         when(playerRepository.existsById(id)).thenReturn(true);
 
@@ -117,11 +121,9 @@ public class PlayerServiceTest {
     @DisplayName("PlayerService throws exception if player doesnt exist before deleting")
     void test_throws_exception_if_doesnt_exist_before_deletion(){
 
-        String expectedMessage = "Player with id: " + id + " not found";
-
-        PlayerNotFoundException exception = assertThrows(PlayerNotFoundException.class, () -> {
-            playerService.deletePlayer(id);
-        });
+        exception = assertThrowsPlayerNotFoundException(() -> 
+            playerService.deletePlayer(id)
+        );
 
         assertThat(exception.getMessage(), is(equalTo(expectedMessage)));
 
