@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -42,5 +43,11 @@ public class PlayerController {
     public ResponseEntity<String> updatePlayer(@RequestBody final UpdatePlayerRequest updateRequest){
         playerService.createOrUpdate(updateRequest);
         return ResponseEntity.ok("Jugador actualizado con éxito");
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deletePlayer(@PathVariable final Long id){
+        playerService.deletePlayer(id);
+        return ResponseEntity.ok("Jugador eliminado con éxito");
     }
 }
