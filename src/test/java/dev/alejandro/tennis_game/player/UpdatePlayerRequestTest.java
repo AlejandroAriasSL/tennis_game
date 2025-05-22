@@ -7,6 +7,8 @@ import static org.hamcrest.Matchers.is;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import dev.alejandro.tennis_game.player.requests.UpdatePlayerRequest;
+
 public class UpdatePlayerRequestTest {
 
     @Test

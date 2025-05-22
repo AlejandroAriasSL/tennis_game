@@ -1,4 +1,6 @@
-package dev.alejandro.tennis_game.player;
+package dev.alejandro.tennis_game.player.requests;
+
+import dev.alejandro.tennis_game.player.Player;
 
 public record UpdatePlayerRequest(String name, Long id) implements PlayerRequest{
 

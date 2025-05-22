@@ -20,6 +20,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
 
+import dev.alejandro.tennis_game.player.requests.UpdatePlayerRequest;
+
 public class PlayerServiceTest {
 
     String name;

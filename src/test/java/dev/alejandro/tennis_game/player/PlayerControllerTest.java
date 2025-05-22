@@ -19,6 +19,9 @@ import org.junit.jupiter.api.Test;
 
 import org.springframework.http.ResponseEntity;
 
+import dev.alejandro.tennis_game.player.requests.CreatePlayerRequest;
+import dev.alejandro.tennis_game.player.requests.UpdatePlayerRequest;
+
 public class PlayerControllerTest {
 
     PlayerRepository repository;
