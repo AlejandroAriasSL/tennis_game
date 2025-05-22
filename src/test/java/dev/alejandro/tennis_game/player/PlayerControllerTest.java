@@ -10,19 +10,27 @@ import static org.mockito.Mockito.when;
 
 import java.util.List;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.ResponseEntity;
 
 public class PlayerControllerTest {
 
+    PlayerRepository repository;
+    PlayerService playerService;
+    PlayerController playerController;
+
+    @BeforeEach
+    void setUp(){
+        repository  = mock(PlayerRepository.class);
+        playerService = new PlayerService(repository);
+        playerController = new PlayerController(playerService);
+    }
+
     @Test
     @DisplayName("PlayerController getAllPlayers returns empty list when no players found")
     void test_playerController_returns_empty_list_when_no_players(){
-
-        PlayerRepository repository = mock(PlayerRepository.class);
-        PlayerService playerService = new PlayerService(repository);
-        PlayerController playerController = new PlayerController(playerService);
 
         ResponseEntity<List<PlayerDTO>> response = playerController.getAllPlayers();
 
@@ -34,10 +42,6 @@ public class PlayerControllerTest {
     @Test
     @DisplayName("PlayerController getAllPlayers returns list of playerDTOs")
     void test_playerController_returns_list_of_playerDto(){
-
-        PlayerRepository repository = mock(PlayerRepository.class);
-        PlayerService playerService = new PlayerService(repository);
-        PlayerController playerController = new PlayerController(playerService);
 
         List<Player> playerEntities = List.of(new Player("player1", 1L), new Player("player2", 2L));
 
