@@ -13,18 +13,22 @@ public class PlayerService {
         this.playerRepository = playerRepository;
     }
 
-    public void createOrUpdate(Player player){
-        playerRepository.save(player);
+    public void createOrUpdate(PlayerDTO playerDto){
+        playerRepository.save(playerDto.toEntity());
     }
 
-    public Player getPlayerById(Long id) throws PlayerNotFoundException{
+    public PlayerDTO getPlayerById(Long id) throws PlayerNotFoundException{
         return playerRepository.findById(id)
+                               .map(PlayerDTO::fromEntity)
                                .orElseThrow(() -> 
                                new PlayerNotFoundException(id));
     }
 
-    public List<Player> getAllPlayers(){
-        return playerRepository.findAll();
+    public List<PlayerDTO> getAllPlayers(){
+        return playerRepository.findAll()
+                               .stream()
+                               .map(PlayerDTO::fromEntity)
+                               .toList();
     }
 
     public void deletePlayer(Long id) throws PlayerNotFoundException{

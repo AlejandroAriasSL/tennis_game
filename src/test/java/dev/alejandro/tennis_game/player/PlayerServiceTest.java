@@ -1,9 +1,12 @@
 package dev.alejandro.tennis_game.player;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -23,7 +26,9 @@ public class PlayerServiceTest {
     Long id;
     String expectedMessage;
     
+    PlayerDTO playerDto;
     Player player;
+
     PlayerNotFoundException exception;
     PlayerRepository playerRepository;
     PlayerService playerService;
@@ -39,6 +44,7 @@ public class PlayerServiceTest {
         id = 1L;
         expectedMessage = "Player with id: " + id + " not found";
         player = new Player(name, id);
+        playerDto = new PlayerDTO(name, id);
         playerRepository = mock(PlayerRepository.class);
         playerService = new PlayerService(playerRepository);
     }
@@ -50,9 +56,9 @@ public class PlayerServiceTest {
 
         when(playerRepository.findById(id)).thenReturn(Optional.of(player));
 
-        Player foundPlayer = playerService.getPlayerById(id);
+        PlayerDTO foundPlayer = playerService.getPlayerById(id);
 
-        assertThat(foundPlayer, is(equalTo(player)));
+        assertThat(foundPlayer, is(equalTo(playerDto)));
         verify(playerRepository).findById(id);
 
     }
@@ -82,7 +88,12 @@ public class PlayerServiceTest {
 
         when(playerRepository.findAll()).thenReturn(players);
 
-        assertThat(playerService.getAllPlayers(), is(equalTo(players)));
+        List<PlayerDTO> expectedPlayerDTOs = List.of(
+            PlayerDTO.fromEntity(player),
+            PlayerDTO.fromEntity(player2)
+        );
+
+        assertThat(playerService.getAllPlayers(), is(equalTo(expectedPlayerDTOs)));
         verify(playerRepository).findAll();
     }
 
@@ -92,12 +103,12 @@ public class PlayerServiceTest {
 
         when(playerRepository.findById(id)).thenReturn(Optional.of(player));
 
-        playerService.createOrUpdate(player);
-        Player found = playerService.getPlayerById(id);
+        playerService.createOrUpdate(playerDto);
+        PlayerDTO found = playerService.getPlayerById(id);
 
-        assertThat(found, is(equalTo(player)));
+        assertThat(found, is(equalTo(playerDto)));
         
-        verify(playerRepository).save(player);
+        verify(playerRepository).save(any(Player.class));
         verify(playerRepository).findById(id);
 
     }
@@ -109,10 +120,10 @@ public class PlayerServiceTest {
         when(playerRepository.save(player)).thenReturn(player);
         when(playerRepository.existsById(id)).thenReturn(true);
 
-        playerService.createOrUpdate(player);
+        playerService.createOrUpdate(playerDto);
         playerService.deletePlayer(id);
 
-        verify(playerRepository, times(1)).save(player);
+        verify(playerRepository, times(1)).save(any(Player.class));
         verify(playerRepository, times(1)).deleteById(id);
 
     }
