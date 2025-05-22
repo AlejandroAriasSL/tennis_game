@@ -36,7 +36,7 @@ public class PlayerControllerTest {
     @DisplayName("PlayerController getAllPlayers returns empty list when no players found")
     void test_playerController_returns_empty_list_when_no_players(){
 
-        ResponseEntity<List<PlayerDTO>> response = playerController.getAllPlayers();
+        ResponseEntity<List<UpdatePlayerRequest>> response = playerController.getAllPlayers();
 
         assertThat(response.getStatusCode().is2xxSuccessful(), is(equalTo(true)));
         assertThat(response.getBody(), is(notNullValue()));
@@ -44,21 +44,21 @@ public class PlayerControllerTest {
     }
 
     @Test
-    @DisplayName("PlayerController getAllPlayers returns list of playerDTOs")
-    void test_playerController_returns_list_of_playerDto(){
+    @DisplayName("PlayerController getAllPlayers returns list of UpdatePlayerRequests")
+    void test_playerController_returns_list_of_UpdatePlayerRequest(){
 
         List<Player> playerEntities = List.of(new Player("player1", 1L), new Player("player2", 2L));
 
         when(repository.findAll()).thenReturn(playerEntities);
 
-        ResponseEntity<List<PlayerDTO>> response = playerController.getAllPlayers();
+        ResponseEntity<List<UpdatePlayerRequest>> response = playerController.getAllPlayers();
 
-        List<PlayerDTO> playerDtos = playerEntities.stream().map(PlayerDTO::fromEntity).toList(); 
+        List<UpdatePlayerRequest> UpdatePlayerRequests = playerEntities.stream().map(UpdatePlayerRequest::fromEntity).toList(); 
 
         assertThat(response.getStatusCode().is2xxSuccessful(), is(equalTo(true)));
         assertThat(response.getBody(), is(notNullValue()));
         assertThat(response.getBody().size(), is(2));
-        assertThat(response.getBody(), is(equalTo(playerDtos)));
+        assertThat(response.getBody(), is(equalTo(UpdatePlayerRequests)));
 
     }
 
@@ -70,18 +70,18 @@ public class PlayerControllerTest {
         
         when(repository.findById(player.getId())).thenReturn(Optional.of(player));
 
-        ResponseEntity<PlayerDTO> response = playerController.getPlayerById(player.getId());
+        ResponseEntity<UpdatePlayerRequest> response = playerController.getPlayerById(player.getId());
 
         assertThat(response.getStatusCode().is2xxSuccessful(), is(equalTo(true)));
         assertThat(response.getBody(), is(notNullValue(null)));
-        assertThat(response.getBody(), is(equalTo(PlayerDTO.fromEntity(player))));
+        assertThat(response.getBody(), is(equalTo(UpdatePlayerRequest.fromEntity(player))));
     }
 
     @Test
     @DisplayName("PlayerController createPlayer returns success response")
     void test_playerController_create_succesful(){
 
-        PlayerDTO player = new PlayerDTO("Player1", 1L);
+        CreatePlayerRequest player = new CreatePlayerRequest("Player1");
 
         ResponseEntity<String> response = playerController.createPlayer(player);
 

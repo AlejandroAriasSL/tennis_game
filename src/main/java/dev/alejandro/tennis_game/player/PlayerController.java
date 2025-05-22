@@ -7,6 +7,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,20 +23,18 @@ public class PlayerController {
     }
 
     @GetMapping
-    public ResponseEntity<List<PlayerDTO>> getAllPlayers(){
+    public ResponseEntity<List<UpdatePlayerRequest>> getAllPlayers(){
         return ResponseEntity.ok(playerService.getAllPlayers());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<PlayerDTO> getPlayerById(@PathVariable final Long id){
+    public ResponseEntity<UpdatePlayerRequest> getPlayerById(@PathVariable final Long id){
         return ResponseEntity.ok(playerService.getPlayerById(id));
     }
 
     @PostMapping
-    public ResponseEntity<String> createPlayer(@RequestBody final PlayerDTO playerDto){
-        playerService.createOrUpdate(playerDto);
+    public ResponseEntity<String> createPlayer(@RequestBody final CreatePlayerRequest createRequest){
+        playerService.createOrUpdate(createRequest);
         return ResponseEntity.ok("Jugador creado con éxito");
     }
-
-    
 }

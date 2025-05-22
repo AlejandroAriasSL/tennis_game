@@ -23,6 +23,10 @@ public class Player {
 
     public Player() {}
 
+    public Player(String name){
+        this.name = name;
+    }
+
     public Player(String name, Long id){
         this.name = name;
         this.id = id;
