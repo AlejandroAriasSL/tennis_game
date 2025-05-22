@@ -1,18 +1,20 @@
 package dev.alejandro.tennis_game.player;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
+
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
 import org.springframework.http.ResponseEntity;
 
 public class PlayerControllerTest {
@@ -56,5 +58,20 @@ public class PlayerControllerTest {
         assertThat(response.getBody().size(), is(2));
         assertThat(response.getBody(), is(equalTo(playerDtos)));
 
+    }
+
+    @Test
+    @DisplayName("PlayerController getPlayerById returns player by id")
+    void test_playerController_returns_player_by_id(){
+
+        Player player = new Player("Player1", 1L);
+        
+        when(repository.findById(player.getId())).thenReturn(Optional.of(player));
+
+        ResponseEntity<PlayerDTO> response = playerController.getPlayerById(player.getId());
+
+        assertThat(response.getStatusCode().is2xxSuccessful(), is(equalTo(true)));
+        assertThat(response.getBody(), is(notNullValue(null)));
+        assertThat(response.getBody(), is(equalTo(PlayerDTO.fromEntity(player))));
     }
 }
