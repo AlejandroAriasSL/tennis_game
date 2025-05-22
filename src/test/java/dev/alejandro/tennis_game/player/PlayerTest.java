@@ -32,6 +32,15 @@ public class PlayerTest {
     }
 
     @Test
+    @DisplayName("Player constructor with no parameters")
+    void test_player_constructor_without_parameters(){
+
+        Player playerInstance = new Player();
+
+        assertThat(playerInstance.getClass(), is(equalTo(Player.class)));
+    }
+
+    @Test
     @DisplayName("Player can change name")
     void test_player_name_change(){
 
