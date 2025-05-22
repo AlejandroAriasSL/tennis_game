@@ -91,4 +91,19 @@ public class PlayerControllerTest {
 
         verify(repository, times(1)).save(any(Player.class));
     }
+
+    @Test
+    @DisplayName("PlayerController updatePlayer returns success response")
+    void test_playerController_update_succesful(){
+
+        UpdatePlayerRequest updateRequest = new UpdatePlayerRequest("Player1", 1L);
+
+        ResponseEntity<String> response = playerController.updatePlayer(updateRequest);
+
+        assertThat(response.getStatusCode().is2xxSuccessful(), is(equalTo(true)));
+        assertThat(response.getBody(), is(notNullValue()));
+        assertThat(response.getBody(), is(equalTo("Jugador actualizado con éxito")));
+
+        verify(repository, times(1)).save(any(Player.class));
+    }
 }
