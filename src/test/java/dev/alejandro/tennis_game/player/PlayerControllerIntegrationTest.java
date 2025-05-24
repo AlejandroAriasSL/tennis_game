@@ -11,6 +11,8 @@ import org.junit.jupiter.api.Test;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 
 import dev.alejandro.tennis_game.player.requests.CreatePlayerRequest;
@@ -67,5 +69,23 @@ public class PlayerControllerIntegrationTest extends AbstractIntegrationTest {
         assertThat(getByIDresponse.getBody()).isNotNull();
         assertThat(getByIDresponse.getBody().id()).isEqualTo(2);
         assertThat(getByIDresponse.getBody().name()).isEqualTo(request2.name());
+    }
+
+    @Test
+    @DisplayName("It should update the selected player and return 2xx response")
+    void test_update_selected_player_and_return_2XX(){
+
+        CreatePlayerRequest request = new CreatePlayerRequest("Player1");
+        restTemplate.postForEntity("/api/player", request, Void.class);
+
+        UpdatePlayerRequest updateRequest = new UpdatePlayerRequest("Manolo", 1L);
+        HttpEntity<UpdatePlayerRequest> entity = new HttpEntity<>(updateRequest);
+
+        ResponseEntity<String> updateResponse = restTemplate.exchange("/api/player/1", HttpMethod.PUT, entity, String.class);
+        assertThat(updateResponse.getStatusCode().is2xxSuccessful()).isTrue();
+
+        ResponseEntity<UpdatePlayerRequest> getResponse = restTemplate.getForEntity("/api/player/1", UpdatePlayerRequest.class);
+        assertThat(getResponse.getBody()).isNotNull();
+        assertThat(getResponse.getBody().name()).isEqualTo(updateRequest.name());
     }
 }
