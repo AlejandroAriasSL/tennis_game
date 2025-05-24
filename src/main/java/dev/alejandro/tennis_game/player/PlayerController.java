@@ -1,7 +1,9 @@
 package dev.alejandro.tennis_game.player;
 
+import java.net.URI;
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,9 +18,11 @@ import dev.alejandro.tennis_game.player.requests.CreatePlayerRequest;
 import dev.alejandro.tennis_game.player.requests.UpdatePlayerRequest;
 
 @RestController
-@RequestMapping("api/player")
+@RequestMapping(path = PlayerController.BASE_PATH)
 public class PlayerController {
 
+    private static final String BASE_PATH = "/api/player";
+    
     private final PlayerService playerService;
 
     public PlayerController(final PlayerService playerService){
@@ -36,20 +40,21 @@ public class PlayerController {
     }
 
     @PostMapping
-    public ResponseEntity<String> createPlayer(@RequestBody final CreatePlayerRequest createRequest){
-        playerService.createOrUpdate(createRequest);
-        return ResponseEntity.ok("Jugador creado con éxito");
+    public ResponseEntity<UpdatePlayerRequest> createPlayer(@RequestBody final CreatePlayerRequest createRequest){
+        UpdatePlayerRequest response = playerService.createOrUpdate(createRequest);
+        URI location = URI.create(BASE_PATH + "/" + response.id());
+        return ResponseEntity.created(location).body(response);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<String> updatePlayer(@RequestBody final UpdatePlayerRequest updateRequest){
-        playerService.createOrUpdate(updateRequest);
-        return ResponseEntity.ok("Jugador actualizado con éxito");
+    public ResponseEntity<UpdatePlayerRequest> updatePlayer(@RequestBody final UpdatePlayerRequest updateRequest){
+        UpdatePlayerRequest response =  playerService.createOrUpdate(updateRequest);
+        return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deletePlayer(@PathVariable final Long id){
         playerService.deletePlayer(id);
-        return ResponseEntity.ok("Jugador eliminado con éxito");
+        return ResponseEntity.noContent().build();
     }
 }

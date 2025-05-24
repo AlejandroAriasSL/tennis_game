@@ -17,8 +17,9 @@ public class PlayerService {
         this.playerRepository = playerRepository;
     }
 
-    public void createOrUpdate(PlayerRequest request){
-        playerRepository.save(request.toEntity());
+    public UpdatePlayerRequest createOrUpdate(PlayerRequest request){
+        Player player = playerRepository.save(request.toEntity());
+        return UpdatePlayerRequest.fromEntity(player);
     }
 
     public UpdatePlayerRequest getPlayerById(Long id) throws PlayerNotFoundException{
