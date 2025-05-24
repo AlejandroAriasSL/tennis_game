@@ -4,6 +4,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.nullValue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -16,7 +17,8 @@ import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 
 import dev.alejandro.tennis_game.player.requests.CreatePlayerRequest;
@@ -83,14 +85,17 @@ public class PlayerControllerTest {
     @Test
     @DisplayName("PlayerController createPlayer returns success response")
     void test_playerController_create_succesful(){
+        Player player = new Player("Player1", 1L);
 
-        CreatePlayerRequest player = new CreatePlayerRequest("Player1");
+        CreatePlayerRequest mockRequest = new CreatePlayerRequest("Player1");
 
-        ResponseEntity<String> response = playerController.createPlayer(player);
+        when(repository.save(any(Player.class))).thenReturn(player);
+
+        ResponseEntity<UpdatePlayerRequest> response = playerController.createPlayer(mockRequest);
 
         assertThat(response.getStatusCode().is2xxSuccessful(), is(equalTo(true)));
         assertThat(response.getBody(), is(notNullValue()));
-        assertThat(response.getBody(), is(equalTo("Jugador creado con éxito")));
+        assertThat(response.getBody().name(), is(equalTo(mockRequest.name())));
 
         verify(repository, times(1)).save(any(Player.class));
     }
@@ -99,13 +104,15 @@ public class PlayerControllerTest {
     @DisplayName("PlayerController updatePlayer returns success response")
     void test_playerController_update_succesful(){
 
-        UpdatePlayerRequest updateRequest = new UpdatePlayerRequest("Player1", 1L);
+        UpdatePlayerRequest mockRequest = new UpdatePlayerRequest("Player1", 1L);
 
-        ResponseEntity<String> response = playerController.updatePlayer(updateRequest);
+        when(repository.save(any(Player.class))).thenReturn(mockRequest.toEntity());
+
+        ResponseEntity<UpdatePlayerRequest> response = playerController.updatePlayer(mockRequest);
 
         assertThat(response.getStatusCode().is2xxSuccessful(), is(equalTo(true)));
         assertThat(response.getBody(), is(notNullValue()));
-        assertThat(response.getBody(), is(equalTo("Jugador actualizado con éxito")));
+        assertThat(response.getBody().name(), is(mockRequest.name()));
 
         verify(repository, times(1)).save(any(Player.class));
     }
@@ -121,8 +128,8 @@ public class PlayerControllerTest {
         ResponseEntity<String> response = playerController.deletePlayer(id);
 
         assertThat(response.getStatusCode().is2xxSuccessful(), is(equalTo(true)));
-        assertThat(response.getBody(), is(notNullValue()));
-        assertThat(response.getBody(), is(equalTo("Jugador eliminado con éxito")));
+        assertThat(response.getStatusCode().isSameCodeAs(HttpStatus.NO_CONTENT), is(true));
+        assertThat(response.getBody(), is(nullValue()));
 
         verify(repository, times(1)).deleteById(id);
     }

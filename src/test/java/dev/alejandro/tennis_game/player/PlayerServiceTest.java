@@ -21,6 +21,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
 
 import dev.alejandro.tennis_game.player.exception.PlayerNotFoundException;
+import dev.alejandro.tennis_game.player.requests.CreatePlayerRequest;
 import dev.alejandro.tennis_game.player.requests.UpdatePlayerRequest;
 
 public class PlayerServiceTest {
@@ -104,15 +105,13 @@ public class PlayerServiceTest {
     @DisplayName("PlayerService correctly saves players")
     void test_save_players(){
 
-        when(playerRepository.findById(id)).thenReturn(Optional.of(player));
+        CreatePlayerRequest mockrequest = new CreatePlayerRequest("Player1");
+        when(playerRepository.save(any(Player.class))).thenReturn(player);
 
-        playerService.createOrUpdate(updatePlayerRequest);
-        UpdatePlayerRequest found = playerService.getPlayerById(id);
-
-        assertThat(found, is(equalTo(updatePlayerRequest)));
+        UpdatePlayerRequest savedPlayer = playerService.createOrUpdate(mockrequest);
+        assertThat(savedPlayer.name(), is(equalTo(mockrequest.name())));
         
         verify(playerRepository).save(any(Player.class));
-        verify(playerRepository).findById(id);
 
     }
 
@@ -120,10 +119,12 @@ public class PlayerServiceTest {
     @DisplayName("PlayerService correctly deletes players")
     void test_delete_players(){
 
-        when(playerRepository.save(player)).thenReturn(player);
+        CreatePlayerRequest mockRequest = new CreatePlayerRequest("Player1");
+
+        when(playerRepository.save(any(Player.class))).thenReturn(player);
         when(playerRepository.existsById(id)).thenReturn(true);
 
-        playerService.createOrUpdate(updatePlayerRequest);
+        playerService.createOrUpdate(mockRequest);
         playerService.deletePlayer(id);
 
         verify(playerRepository, times(1)).save(any(Player.class));

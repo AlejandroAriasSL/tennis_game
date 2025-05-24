@@ -3,6 +3,7 @@ package dev.alejandro.tennis_game.player;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.net.URI;
 import java.util.Arrays;
 import java.util.List;
 
@@ -78,17 +79,18 @@ public class PlayerControllerIntegrationTest extends AbstractIntegrationTest {
     void test_update_selected_player_and_return_2XX(){
 
         CreatePlayerRequest request = new CreatePlayerRequest("Player1");
-        restTemplate.postForEntity("/api/player", request, Void.class);
+        ResponseEntity<UpdatePlayerRequest> response = restTemplate.postForEntity("/api/player", request, UpdatePlayerRequest.class);
 
-        UpdatePlayerRequest updateRequest = new UpdatePlayerRequest("Manolo", 1L);
+        URI playerLocation = response.getHeaders().getLocation();
+        String path = playerLocation.getPath();
+        Long id = Long.parseLong(path.substring(path.lastIndexOf("/") +1));
+
+        UpdatePlayerRequest updateRequest = new UpdatePlayerRequest("Manolo", id);
         HttpEntity<UpdatePlayerRequest> entity = new HttpEntity<>(updateRequest);
 
-        ResponseEntity<String> updateResponse = restTemplate.exchange("/api/player/1", HttpMethod.PUT, entity, String.class);
+        ResponseEntity<UpdatePlayerRequest> updateResponse = restTemplate.exchange(playerLocation, HttpMethod.PUT, entity, UpdatePlayerRequest.class);
         assertThat(updateResponse.getStatusCode().is2xxSuccessful()).isTrue();
-
-        ResponseEntity<UpdatePlayerRequest> getResponse = restTemplate.getForEntity("/api/player/1", UpdatePlayerRequest.class);
-        assertThat(getResponse.getBody()).isNotNull();
-        assertThat(getResponse.getBody().name()).isEqualTo(updateRequest.name());
+        assertThat(updateResponse.getBody().name()).isEqualTo(updateRequest.name());
     }
 
     @Test
@@ -102,7 +104,7 @@ public class PlayerControllerIntegrationTest extends AbstractIntegrationTest {
         assertThat(getResponse.getBody().name()).isEqualTo(request.name());
 
         restTemplate.delete("/api/player/1");
-        
+
         ResponseEntity<ApiError> getResponseAfterDelete = restTemplate.getForEntity("/api/player/1", ApiError.class);
         assertThat(getResponseAfterDelete.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
         assertThat(getResponseAfterDelete.getBody().message()).containsIgnoringCase("not found");
