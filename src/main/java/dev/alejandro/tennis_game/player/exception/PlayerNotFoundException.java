@@ -1,4 +1,4 @@
-package dev.alejandro.tennis_game.player;
+package dev.alejandro.tennis_game.player.exception;
 
 import jakarta.persistence.EntityNotFoundException;
 

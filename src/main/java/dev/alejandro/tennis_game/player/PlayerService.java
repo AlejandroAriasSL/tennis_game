@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import dev.alejandro.tennis_game.player.exception.PlayerNotFoundException;
 import dev.alejandro.tennis_game.player.requests.PlayerRequest;
 import dev.alejandro.tennis_game.player.requests.UpdatePlayerRequest;
 
