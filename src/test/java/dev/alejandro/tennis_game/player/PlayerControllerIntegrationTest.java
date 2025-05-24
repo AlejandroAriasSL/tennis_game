@@ -50,4 +50,22 @@ public class PlayerControllerIntegrationTest extends AbstractIntegrationTest {
         assertThat(getResponse.getBody()).isNotNull();
         assertThat(playerNames).contains(request.name());
     }
+
+    @Test
+    @DisplayName("It should return the selected player only and 2xx response")
+    void test_get_selected_player_by_id_returns_2XX(){
+
+        CreatePlayerRequest request = new CreatePlayerRequest("Player1");
+        CreatePlayerRequest request2 = new CreatePlayerRequest("Player2");
+
+        restTemplate.postForEntity("/api/player", request, Void.class);
+        restTemplate.postForEntity("/api/player", request2, Void.class);
+
+        ResponseEntity<UpdatePlayerRequest> getByIDresponse = restTemplate.getForEntity("/api/player/2", UpdatePlayerRequest.class);
+
+        assertThat(getByIDresponse.getStatusCode().is2xxSuccessful()).isTrue();
+        assertThat(getByIDresponse.getBody()).isNotNull();
+        assertThat(getByIDresponse.getBody().id()).isEqualTo(2);
+        assertThat(getByIDresponse.getBody().name()).isEqualTo(request2.name());
+    }
 }
