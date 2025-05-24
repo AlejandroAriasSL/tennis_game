@@ -13,8 +13,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import dev.alejandro.tennis_game.player.exception.ApiError;
 import dev.alejandro.tennis_game.player.requests.CreatePlayerRequest;
 import dev.alejandro.tennis_game.player.requests.UpdatePlayerRequest;
 
@@ -87,5 +89,23 @@ public class PlayerControllerIntegrationTest extends AbstractIntegrationTest {
         ResponseEntity<UpdatePlayerRequest> getResponse = restTemplate.getForEntity("/api/player/1", UpdatePlayerRequest.class);
         assertThat(getResponse.getBody()).isNotNull();
         assertThat(getResponse.getBody().name()).isEqualTo(updateRequest.name());
+    }
+
+    @Test
+    @DisplayName("It should delete the selected player and return 2xx response")
+    void test_delete_selected_player_and_return_2XX(){
+
+        CreatePlayerRequest request = new CreatePlayerRequest("Player1");
+        restTemplate.postForEntity("/api/player", request, Void.class);
+
+        ResponseEntity<UpdatePlayerRequest> getResponse = restTemplate.getForEntity("/api/player/1", UpdatePlayerRequest.class);
+        assertThat(getResponse.getBody().name()).isEqualTo(request.name());
+
+        restTemplate.delete("/api/player/1");
+        
+        ResponseEntity<ApiError> getResponseAfterDelete = restTemplate.getForEntity("/api/player/1", ApiError.class);
+        assertThat(getResponseAfterDelete.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        assertThat(getResponseAfterDelete.getBody().message()).containsIgnoringCase("not found");
+
     }
 }
