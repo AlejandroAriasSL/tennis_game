@@ -1,0 +1,29 @@
+site_name: Tennis Game
+site_url: https://alejandroariassl.github.io/tennis_game
+theme:
+  name: material
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/weather-night
+        name: "Modo oscuro"
+    - scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/weather-sunny
+        name: "Modo claro"
+markdown_extensions:
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - codehilite:
+      guess_lang: false
+  - admonition
+  - pymdownx.details
