@@ -11,17 +11,23 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import dev.alejandro.tennis_game.TennisGameApplication;
 import dev.alejandro.tennis_game.player.exception.ApiError;
 import dev.alejandro.tennis_game.player.requests.CreatePlayerRequest;
 import dev.alejandro.tennis_game.player.requests.UpdatePlayerRequest;
 
-
+@SpringBootTest(
+    classes = TennisGameApplication.class,
+    webEnvironment = WebEnvironment.RANDOM_PORT
+)
 public class PlayerControllerIntegrationTest extends AbstractIntegrationTest {
 
     @Autowired
@@ -64,13 +70,13 @@ public class PlayerControllerIntegrationTest extends AbstractIntegrationTest {
         CreatePlayerRequest request2 = new CreatePlayerRequest("Player2");
 
         restTemplate.postForEntity("/api/player", request, Void.class);
-        restTemplate.postForEntity("/api/player", request2, Void.class);
+        ResponseEntity<UpdatePlayerRequest> response = restTemplate.postForEntity("/api/player", request2, UpdatePlayerRequest.class);
 
-        ResponseEntity<UpdatePlayerRequest> getByIDresponse = restTemplate.getForEntity("/api/player/2", UpdatePlayerRequest.class);
+        ResponseEntity<UpdatePlayerRequest> getByIDresponse = restTemplate.getForEntity(response.getHeaders().getLocation(), UpdatePlayerRequest.class);
 
         assertThat(getByIDresponse.getStatusCode().is2xxSuccessful()).isTrue();
         assertThat(getByIDresponse.getBody()).isNotNull();
-        assertThat(getByIDresponse.getBody().id()).isEqualTo(2);
+        assertThat(getByIDresponse.getBody().id()).isEqualTo(response.getBody().id());
         assertThat(getByIDresponse.getBody().name()).isEqualTo(request2.name());
     }
 

@@ -1,19 +1,12 @@
 package dev.alejandro.tennis_game.player;
 
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 
 import org.testcontainers.containers.MySQLContainer;
 
-import dev.alejandro.tennis_game.TennisGameApplication;
 
-@SpringBootTest(
-    classes = TennisGameApplication.class,
-    webEnvironment = WebEnvironment.RANDOM_PORT
-)
 @ActiveProfiles("test")
 abstract class AbstractIntegrationTest {
 
